@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>끝말잇기</title>
+  </head>
+  <body>
+    <div><span id="order">1</span>번째 참가자</div>
+    <div>제시어: <span id="word"></span></div>
+    <input type="text" />
+    <button>입력</button>
+    <script>
+      'use strict';
+
+      const userNum = Number(prompt('몇 명?'));
+      const $input = document.querySelector('input');
+      const $button = document.querySelector('button');
+      const $word = document.querySelector('#word');
+      const $order = document.querySelector('#order');
+
+      let word;
+      let newWord;
+
+      $button.addEventListener('click', onClickButton);
+      $input.addEventListener('input', onInput);
+
+      //리스너함수
+      function onClickButton() {
+        if (!word || word[word.length - 1] === newWord[0]) {
+          word = newWord;
+          $word.textContent = word;
+          const order = Number($order.textContent);
+
+          if (order + 1 > userNum) {
+            $order.textContent = 1;
+          } else {
+            $order.textContent = order + 1;
+          }
+          $input.value = '';
+          $input.focus();
+        } else {
+          alert('다시 해라 마');
+          $input.value = '';
+          $input.focus();
+        }
+      }
+      function onInput(event) {
+        newWord = event.target.value;
+      }
+    </script>
+  </body>
+</html>

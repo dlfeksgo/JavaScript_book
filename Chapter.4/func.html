@@ -94,6 +94,24 @@
         .querySelector('#num-2')
         // .addEventListener('click', onClickNumber3('2'));
         .addEventListener('click', onClickNumber);
+
+      // function onClickNumber(event) {
+      //   if (operator) {
+      //     numTwo += event.target.textContent;
+      //   } else {
+      //     numOne += event.target.textContent;
+      //   }
+      //   $result.value += event.target.textContent;
+      // }
+
+      function onClickNumber2(number) {
+        if (operator) {
+          numTwo += number;
+        } else {
+          numOne += number;
+        }
+        $result.value += number;
+      }
     </script>
   </body>
 </html>
