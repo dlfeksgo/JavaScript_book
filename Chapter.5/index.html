@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="form">
+      <input type="text" id="input" />
+      <button>확인</button>
+    </form>
+
+    <div id="logs"></div>
+    <script>
+      const $input = document.querySelector('input');
+      const $button = document.querySelector('button');
+      const $logs = document.querySelector('#logs');
+      const $form = document.querySelector('form');
+
+      const numbers = [];
+      for (let i = 1; i < 10; i++) {
+        numbers.push(i);
+      }
+
+      const answer = [];
+      for (let n = 0; n <= 3; n++) {
+        const num = Math.floor(Math.random() * numbers.length);
+        answer.push(numbers[num]);
+        numbers.splice(num, 1);
+      }
+      console.log(answer);
+
+      const tries = [];
+      $form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const value = $input.value;
+        $input.value = '';
+        if (value.length !== 4) {
+          //<이거로 하면 5자리부터는 또 돼요
+          alert('4자리 입력해 짜샤!');
+          return false;
+        }
+        if (new Set(value).size !== 4) {
+          alert('중복은 앙대요');
+          return false;
+        }
+        if (tries.includes(value)) {
+          alert('이미 햇짜놔');
+          return false;
+        }
+        if (answer.join('') === value) {
+          $logs.textContent = '홈런~!';
+          return;
+        }
+        if (tries.length >= 9) {
+          $logs.append(`실패야! 정답은 ${answer.join('')}`);
+          return;
+        }
+        let strike = 0;
+        let ball = 0;
+        //시도한 문자열의 데이터가 answer의 배열 안에 포함되어 있니 ?
+        //true&false를 원하면 includes를, index 위치를 원하면 indexOf 사용
+        //answer이 [1,2,3,4]일 때,
+        //answer[0]은 1
+        //value값이 1을 가지고 있는 지 판단해서 index라는 변수에 담았어
+        //있으면 위치값을 없으면 -1을 반환
+        //i 자체가 지금 위치값
+        // answer.forEach((num, i) => {
+        //   const index = value.indexOf(num);
+        //   if (index > -1) {
+        //     //일치하는 값이 있는데 위치도 같니? 아님 값만 있니 ?
+        //     if (index === i) {
+        //       strike += 1;
+        //     } else {
+        //       ball += 1;
+        //     }
+        //   }
+        // });
+
+        for (let i = 0; i < answer.length; i++) {
+          const index = value.indexOf(answer[i]); //(//answer[0])존재하면 index 위치값을, 없으면 -1 반환
+          if (index > -1) {
+            //일치하는 값이 있는데 위치도 같니? 아님 값만 있니 ?
+            if (index === i) {
+              strike += 1;
+            } else {
+              ball += 1;
+            }
+          }
+        }
+
+        $logs.append(
+          `${value} : ${strike} 스트라이크 ${ball} 볼`,
+          document.createElement('br')
+        );
+        tries.push(value);
+      });
+    </script>
+  </body>
+</html>
+
+<!-- if (answer.join('') === value) {
+    $logs.textContent = '홈런!';
+  }
+  return; -->

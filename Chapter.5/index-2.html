@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="form">
+      <input type="text" id="input" />
+      <button>확인</button>
+    </form>
+
+    <div id="logs"></div>
+    <script>
+      const $input = document.querySelector('input');
+      const $button = document.querySelector('button');
+      const $logs = document.querySelector('#logs');
+      const $form = document.querySelector('form');
+
+      const numbers = [];
+      for (let i = 1; i < 10; i++) {
+        numbers.push(i);
+      }
+
+      const answer = [];
+      for (let n = 0; n <= 3; n++) {
+        const num = Math.floor(Math.random() * numbers.length);
+        answer.push(numbers[num]);
+        numbers.splice(num, 1);
+      }
+
+      console.log(answer);
+
+      let strike = 0;
+      let ball = 0;
+      let out = 0;
+
+      function checkInput(value) {
+        if (value.length !== 4) {
+          alert('4자리 입력해 짜샤!');
+          return false;
+        }
+        if (new Set(value).size !== 4) {
+          alert('중복은 앙대요');
+          return false;
+        }
+        if (tries.includes(value)) {
+          alert('이미 햇짜놔');
+          return false;
+        }
+        return true;
+      }
+
+      const tries = [];
+      $form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const value = $input.value;
+        $input.value = '';
+        checkInput(value);
+        if (answer.join('') === value) {
+          $logs.textContent = '홈런~!';
+          return;
+        }
+        if (out === 2 || tries.length >= 9) {
+          $logs.append(`실패야! 정답은 ${answer.join('')}`);
+          return;
+        }
+
+        answer.forEach((num, i) => {
+          const index = value.indexOf(num);
+          if (index > -1) {
+            if (index === i) {
+              strike += 1;
+            } else {
+              ball += 1;
+            }
+          }
+        });
+
+        //아웃은 자릿수별로 판단하는게 아니기때문에 반복 배열 메소드에 넣으면 안된다.
+
+        if (strike > 0 || ball > 0) {
+          $logs.append(
+            `${value} : ${strike} 스트라이크 ${ball} 볼`,
+            document.createElement('br')
+          );
+        }
+        if (strike === 0 && ball === 0) {
+          out++;
+          $logs.append(`${value} : ${out} 아웃`, document.createElement('br'));
+        }
+
+        tries.push(value);
+      });
+    </script>
+  </body>
+</html>
+
+<!-- if (answer.join('') === value) {
+    $logs.textContent = '홈런!';
+  }
+  return; -->

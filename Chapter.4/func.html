@@ -56,61 +56,64 @@
       <button id="multiply">x</button>
     </div>
 
+    <button id="a">button</button>
+
     <script>
-      let numOne = '';
-      let operator = '';
-      let numtwo = '';
       const $operator = document.querySelector('#operator');
       const $result = document.querySelector('#result');
 
-      const onClickNumber3 = (number) => {
-        return () => {
-          if (operator) {
-            numTwo += number;
-          } else {
-            numOne += number;
-          }
-          $result.value += number;
-        };
-      };
-
-      const onClickNumber = (event) => {
-        if (operator) {
-          numTwo += event.target.textContent;
-        } else {
-          numOne += event.target.textContent;
-        }
-        $result.value += event.target.textContent;
-      };
+      let numOne = '';
+      let numTwo = '';
+      let operator = '';
 
       document.querySelector('#num-0').addEventListener('click', () => {
-        onClickNumber2('0');
+        onClickNumber('0');
       });
+
+      // document.querySelector('#num-1').addEventListener('click', (e) => {
+      //   onClickNumber(e);
+      // });
+
       document
         .querySelector('#num-1')
-        .addEventListener('click', onClickNumber3('1'));
-      // document.querySelector('#num-2').addEventListener('click', onClickNumber);
-      document
-        .querySelector('#num-2')
-        // .addEventListener('click', onClickNumber3('2'));
-        .addEventListener('click', onClickNumber);
+        .addEventListener('click', onClickNumber('1'));
 
-      // function onClickNumber(event) {
-      //   if (operator) {
-      //     numTwo += event.target.textContent;
-      //   } else {
-      //     numOne += event.target.textContent;
-      //   }
-      //   $result.value += event.target.textContent;
+      function onClickNumber(num) {
+        // console.log(num);
+        // numOne += num;
+        // console.log(numOne);
+        // $result.value = numOne;
+        // if (!numOne) {
+        //   numOne += num;
+        //   $result.value = numOne;
+        // } else {
+        //   numTwo += num;
+        //   $result.value = numTwo;
+        // }
+      }
+
+      // function onClickNumber(e) {
+      // if (!numOne) {
+      //   numOne += e.target.textContent;
+      //   $result.value = numOne;
+      // } else {
+      //   numTwo += e.target.textContent;
+      //   $result.value = numTwo;
       // }
 
-      function onClickNumber2(number) {
-        if (operator) {
-          numTwo += number;
-        } else {
-          numOne += number;
-        }
-        $result.value += number;
+      // function test(e) {
+      //   console.log(e);
+      // }
+
+      // test('1');
+      const btn = document.querySelector('#a');
+      btn.addEventListener('click', onClickNum);
+
+      function onClickNum(num) {
+        // return (x) => {
+        console.log('기본' + num);
+        // console.log('반환' + x);
+        // };
       }
     </script>
   </body>
