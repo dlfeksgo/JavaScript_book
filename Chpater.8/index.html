@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #screen {
+        width: 300px;
+        height: 200px;
+        text-align: center;
+        user-select: none;
+      }
+      #screen.waiting {
+        background-color: aqua;
+      }
+      #screen.ready {
+        background-color: red;
+        color: white;
+      }
+      #screen.now {
+        background-color: greenyellow;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="screen" class="waiting">클릭해서 시작하세요</div>
+    <div id="result"></div>
+    <script>
+      const $screen = document.querySelector('#screen');
+      const $result = document.querySelector('#result');
+
+      let screenColor = 'blue'; //체크
+
+      let startTime;
+      let endTime;
+      const timeArr = [];
+      let timeId;
+
+      $screen.addEventListener('click', () => {
+        switch (screenColor) {
+          case 'blue':
+            screenColor = 'red';
+            $screen.classList.remove('waiting');
+            $screen.classList.add('ready');
+            timeId = setTimeout(() => {
+              startTime = new Date();
+              screenColor = 'green';
+              $screen.classList.remove('ready');
+              $screen.classList.add('now');
+              $screen.textContent = '클릭해봐~';
+            }, Math.floor(Math.random() * 1000 + 1000));
+            break;
+          case 'red':
+            clearTimeout(timeId);
+            screenColor = 'blue';
+            $screen.classList.remove('ready');
+            alert('너무 빠르다 빨라~~ 기둘려~~');
+            break;
+          case 'green':
+            endTime = new Date();
+            let time = endTime - startTime;
+            timeArr.push(time);
+            screenColor = 'blue';
+            $screen.classList.remove('now');
+            $screen.classList.add('waiting');
+            const average = timeArr.reduce((a, c) => a + c) / timeArr.length;
+            $result.textContent = `이번 판은 ${time}ms, 평균은 ${average}ms`;
+            $screen.textContent = '클릭해서 시작하세요';
+            break;
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -48,7 +48,7 @@
 
       // console.log(rspX['rock']);
 
-      // function computerChange() {
+      function computerChange() {
         if (rsp === rspX.scissors) {
           rsp = rspX.rock;
           $computer.style.background = `url(${IMG_URL}) ${rspX.rock} 0/auto 200px`;
@@ -68,10 +68,13 @@
       //누르게 되면 setTimeout예약이 쌓여서 Interval 갯수는 늘어나는데 제거는 1개만 되거등
       let clickable = true;
       let score = 0;
+      let comScore = 0;
+      let count = 0;
       function clickBtn() {
         if (clickable) {
           clickable = false;
           clearInterval(intervalId);
+          count += 1;
           const myChoice = event.target.id;
           // const myChoice = event.target.id === 'scissors' ? '가위' : event.target.id === 'rock' ? '바위' : '보'
           if (myChoice === 'scissors') {
@@ -82,10 +85,12 @@
               case rspX['rock']:
                 console.log('패배');
                 score -= 1;
+                comScore += 1;
                 break;
               case rspX['paper']:
                 console.log('승리');
                 score += 1;
+                comScore -= 1;
                 break;
             }
           } else if (event.target.id === 'rock') {
@@ -93,7 +98,7 @@
               case rspX['scissors']:
                 console.log('승리');
                 score += 1;
-
+                comScore -= 1;
                 break;
               case rspX['rock']:
                 console.log('무승부');
@@ -101,6 +106,7 @@
               case rspX['paper']:
                 console.log('패배');
                 score -= 1;
+                comScore += 1;
 
                 break;
             }
@@ -109,12 +115,12 @@
               case rspX['scissors']:
                 console.log('패배');
                 score -= 1;
-
+                comScore += 1;
                 break;
               case rspX['rock']:
                 console.log('승리');
                 score += 1;
-
+                comScore -= 1;
                 break;
               case rspX['paper']:
                 console.log('무승부');
@@ -122,6 +128,19 @@
             }
           }
           $score.textContent = `총 ${score} 점 획득!`;
+          if (count === 5) {
+            if (score > comScore) {
+              $score.textContent = '내가 이겼지롱';
+            }
+            $score.textContent = '컴퓨터가 이겨버렸네~';
+            return;
+          } else if (score > 2) {
+            $score.textContent = '내가 이겼지롱';
+            return;
+          } else if (comScore > 2) {
+            $score.textContent = '컴퓨터가 이겨버렸네~';
+            return;
+          }
           setTimeout(() => {
             clickable = true;
             intervalId = setInterval(computerChange, 50);
