@@ -27,9 +27,11 @@
   <body>
     <div id="screen" class="waiting">클릭해서 시작하세요</div>
     <div id="result"></div>
+    <div class="win"></div>
     <script>
       const $screen = document.querySelector('#screen');
       const $result = document.querySelector('#result');
+      const $win = document.querySelector('.win');
 
       let screenColor = 'blue'; //체크
 
@@ -67,6 +69,15 @@
             $screen.classList.add('waiting');
             const average = timeArr.reduce((a, c) => a + c) / timeArr.length;
             $result.textContent = `이번 판은 ${time}ms, 평균은 ${average}ms`;
+            const win = timeArr.sort((a, b) => a - b).slice(0, 5);
+            win.forEach((a, i) => {
+              $result.append(
+                document.createElement('br'),
+                `${i + 1}위 : ${a}ms,
+  `
+              );
+            });
+
             $screen.textContent = '클릭해서 시작하세요';
             break;
         }
