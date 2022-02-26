@@ -20,25 +20,89 @@
   </head>
   <body>
     <script>
-      const rows = [];
-      const body = document.body;
       const $table = document.createElement('table');
+      const $body = document.querySelector('body');
+      const $result = document.createElement('div');
+      const rows = []; //1차 빈배열 생성, 나중에 채워진 2차  배열을 여기에 push 해줘~
 
-      for (i = 0; i < 5; i++) {
-        const $tr = document.createElement('tr');
-        const cells = [];
-        for (j = 0; j < 4; j++) {
-          const $td = document.createElement('td');
-          $td.textContent = 1;
-          $tr.append($td);
-          cells.push($tr);
+      let turn = 'O'; //첫 시작은 O 차례로 할게~ 그럼 첫번째 클릭에 O가 들어와야돼
+
+      const clickBox = (event) => {
+        if (event.target.textContent !== '') {
+          console.log('다른 데 눌러라');
         }
-        $table.append($tr);
-        rows.push(cells);
-      }
-      console.log(rows);
+        event.target.textContent = turn;
+        const hasWinner = checkWinner(event.target);
 
-      body.append($table);
+        if (hasWinner) {
+          $result.textContent = `승자는 ${turn}`;
+          $table.removeEventListener('click', clickBox);
+        }
+
+        const draw = rows.flat().every((cell) => cell.textContent);
+        if (draw) {
+          $result.textContent = `무승부`;
+          return;
+        }
+        turn = turn === 'O' ? 'X' : 'O'; //다음 클릭 전에 바꿔주는 것
+      };
+
+      const checkWinner = (target) => {
+        //클릭한 셀의 위치 찾기
+        const rowIndex = event.target.parentNode.rowIndex;
+        const cellIndex = event.target.cellIndex;
+
+        // 승.패 판단 변수 선언, 보통 false로 시작하지, 시작하자마자 이길 수는 없으니까
+        let winner = false;
+
+        if (
+          rows[rowIndex][0].textContent === turn &&
+          rows[rowIndex][1].textContent === turn &&
+          rows[rowIndex][2].textContent === turn
+        ) {
+          winner = true;
+        }
+        if (
+          rows[0][cellIndex].textContent === turn &&
+          rows[1][cellIndex].textContent === turn &&
+          rows[2][cellIndex].textContent === turn
+        ) {
+          winner = true;
+        }
+        if (
+          rows[0][2].textContent === turn &&
+          rows[1][1].textContent === turn &&
+          rows[2][0].textContent === turn
+        ) {
+          winner = true;
+        }
+        if (
+          rows[0][0].textContent === turn &&
+          rows[1][1].textContent === turn &&
+          rows[2][2].textContent === turn
+        ) {
+          winner = true;
+        }
+        return winner;
+      };
+
+      for (i = 0; i < 3; i++) {
+        const $tr = document.createElement('tr');
+        const cells = []; //2차 빈배열 생성
+        for (j = 0; j < 3; j++) {
+          const $td = document.createElement('td');
+          // $td.addEventListener('click', clickBox);
+          cells.push($td);
+          $tr.append($td);
+        }
+        rows.push(cells);
+        $table.append($tr);
+      }
+
+      $table.addEventListener('click', clickBox);
+
+      $body.append($table);
+      $body.append($result);
     </script>
   </body>
 </html>
