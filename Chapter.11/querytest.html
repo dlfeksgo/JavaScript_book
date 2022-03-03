@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h5>객체 검색 실습</h5>
+    <button type="button" id="valCheck">유효성 검사</button>
+    <input type="radio" name="myRadio" class="myRadio" value="1" /> 1
+    <input type="radio" name="myRadio" class="myRadio" value="2" /> 2
+    <input type="radio" name="myRadio" class="myRadio" value="3" /> 3
+    <script>
+      //   var $valCheck = document.getElementById('valCheck');
+      //   var $myRadio = document.getElementsByClassName('myRadio');
+      var $valCheck = document.querySelector('#valCheck');
+      var $myRadio = document.querySelectorAll('.myRadio');
+      var $tag = document.querySelector('button');
+      //   var $tag = document.getElementsByTagName('button');
+      //   var checknum = 0;
+      console.log($valCheck);
+      console.log($myRadio);
+      console.log($tag);
+
+      //   valCheck.onclick = function () {
+      //     for (var i = 0; i < myCheck.length; i++) {
+      //       console.log(myCheck[i].checked);
+      //       console.log(myCheck);
+      //       if (myCheck[i].checked) checknum++;
+      //     }
+      // if (myCheck[0].checked) {
+      //   console.log('첫번째 대답 체크');
+      //   checknum++;
+      // }
+      // if (myCheck[1].checked) {
+      //   console.log('두번째 대답 체크');
+      //   checknum++;
+      // }
+      // if (checknum == 0) {
+      //   alert('확인해라');
+      // }
+      // };
+    </script>
+  </body>
+</html>
