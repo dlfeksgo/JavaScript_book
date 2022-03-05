@@ -48,33 +48,70 @@
 			const cell = 10;
 			const mine = 10;
 
+			// let data = [];
+
+			//게임판 생성
 			function plantMine() {
 				const candidate = Array(row * cell)
 					.fill()
 					.map((num, i) => i);
 				const shuffle = [];
-				while (candidate.length > row * cell - mine) {
+				while (shuffle.length < mine) {
 					const chosen = candidate.splice(
 						Math.floor(Math.random() * candidate.length),
 						1
 					)[0];
 					shuffle.push(chosen);
 				}
-				console.log(candidate);
+
+				//이차원배열 생성
+				const data = [];
+				for (let i = 0; i < row; i++) {
+					const rowData = [];
+					for (let j = 0; j < cell; j++) {
+						rowData.push('-1');
+					}
+					data.push(rowData);
+				}
+
+				//위치값을 빼내는 방법
+				shuffle.forEach((num, i) => {
+					const ver = Math.floor(shuffle[i] / cell);
+					const hor = shuffle[i] % cell;
+					data[ver][hor] = '?';
+				});
+
+				return data;
 			}
 
-			plantMine();
+			//우클릭이벤트
+			function onRightClick(event) {
+				event.preventDefault();
+				const rowIndex = event.target.parentNode.rowIndex;
+				const cellIndex = event.target.cellIndex;
+				console.log(rowIndex, cellIndex);
 
-			// function drawTable() {
-			// 	for (let i = 0; i < 10; i++) {
-			// 		const $tr = document.createElement('tr');
-			// 		for (let j = 0; j < 10; j++) {
-			// 			const $td = document.createElement('td');
-			// 			$tr.append($td);
-			// 		}
-			// 		$tbody.append($tr);
-			// 	}
-			// }
+				// const rowIndex = event.target
+			}
+
+			//화면에 그려주기
+			function drawTable() {
+				data = plantMine();
+				data.forEach((row, i) => {
+					const $tr = document.createElement('tr');
+					row.forEach((cell, i) => {
+						const $td = document.createElement('td');
+						$tr.append($td);
+						if (cell === '?') {
+							$td.textContent = '뿜!';
+						}
+					});
+					$tbody.append($tr);
+				});
+				$tbody.addEventListener('contextmenu', onRightClick);
+			}
+
+			drawTable();
 		</script>
 	</body>
 </html>
