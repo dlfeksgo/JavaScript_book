@@ -69,7 +69,7 @@
 				for (let i = 0; i < row; i++) {
 					const rowData = [];
 					for (let j = 0; j < cell; j++) {
-						rowData.push('-1');
+						rowData.push('닫힘');
 					}
 					data.push(rowData);
 				}
@@ -78,7 +78,7 @@
 				shuffle.forEach((num, i) => {
 					const ver = Math.floor(shuffle[i] / cell);
 					const hor = shuffle[i] % cell;
-					data[ver][hor] = '?';
+					data[ver][hor] = '지뢰';
 				});
 
 				return data;
@@ -89,9 +89,40 @@
 				event.preventDefault();
 				const rowIndex = event.target.parentNode.rowIndex;
 				const cellIndex = event.target.cellIndex;
-				console.log(rowIndex, cellIndex);
-
-				// const rowIndex = event.target
+				const content = data[rowIndex][cellIndex];
+				switch (content) {
+					case '닫힘':
+						event.target.className = 'question';
+						event.target.textContent = '?';
+						data[rowIndex][cellIndex] = '물음표';
+						break;
+					case '물음표':
+						event.target.className = 'flag';
+						event.target.textContent = '!';
+						data[rowIndex][cellIndex] = '깃발';
+						break;
+					case '깃발':
+						event.target.className = '';
+						event.target.textContent = '';
+						data[rowIndex][cellIndex] = '닫힘';
+						break;
+					case '지뢰':
+						event.target.className = 'question';
+						event.target.textContent = '?';
+						data[rowIndex][cellIndex] = '지뢰?';
+						break;
+					case '지뢰?':
+						event.target.className = 'flag';
+						event.target.textContent = '!';
+						data[rowIndex][cellIndex] = '지뢰!';
+						break;
+					case '지뢰!':
+						event.target.className = '';
+						event.target.textContent = '';
+						data[rowIndex][cellIndex] = '지뢰';
+						break;
+				}
+				console.log(data[rowIndex][cellIndex]);
 			}
 
 			//화면에 그려주기
@@ -102,8 +133,8 @@
 					row.forEach((cell, i) => {
 						const $td = document.createElement('td');
 						$tr.append($td);
-						if (cell === '?') {
-							$td.textContent = '뿜!';
+						if (cell === '지뢰') {
+							$td.textContent = 'X';
 						}
 					});
 					$tbody.append($tr);
