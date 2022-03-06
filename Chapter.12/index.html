@@ -47,7 +47,17 @@
 			const row = 10;
 			const cell = 10;
 			const mine = 10;
+			const CODE = {
+				NORMAL: -1, // 닫힌 칸(지뢰 없음)
+				QUESTION: -2,
+				FLAG: -3,
+				QUESTION_MINE: -4,
+				FLAG_MINE: -5,
+				MINE: -6,
+				OPENED: 0, // 0 이상이면 다모두 열린 칸
+			};
 
+			let openCount = 0;
 			// let data = [];
 
 			//게임판 생성
@@ -69,7 +79,7 @@
 				for (let i = 0; i < row; i++) {
 					const rowData = [];
 					for (let j = 0; j < cell; j++) {
-						rowData.push('닫힘');
+						rowData.push(CODE.NORMAL);
 					}
 					data.push(rowData);
 				}
@@ -78,10 +88,71 @@
 				shuffle.forEach((num, i) => {
 					const ver = Math.floor(shuffle[i] / cell);
 					const hor = shuffle[i] % cell;
-					data[ver][hor] = '지뢰';
+					data[ver][hor] = CODE.MINE;
 				});
 
 				return data;
+			}
+
+			function countMines(rowIndex, cellIndex) {
+				const mines = [CODE.MINE, CODE.QUESTION_MINE, CODE.FLAG_MINE];
+				let i = 0;
+				mines.includes(data[rowIndex + 1]?.[cellIndex - 1]) && i++;
+				mines.includes(data[rowIndex + 1]?.[cellIndex]) && i++;
+				mines.includes(data[rowIndex + 1]?.[cellIndex + 1]) && i++;
+				mines.includes(data[rowIndex][cellIndex - 1]) && i++;
+				mines.includes(data[rowIndex][cellIndex + 1]) && i++;
+				mines.includes(data[rowIndex - 1]?.[cellIndex - 1]) && i++;
+				mines.includes(data[rowIndex - 1]?.[cellIndex]) && i++;
+				mines.includes(data[rowIndex - 1]?.[cellIndex + 1]) && i++;
+				return i;
+			}
+
+			// console.log(target); // 지가 혼자 여는 거라 target이 게임판 외부에 있을 수 있음
+			function openAround(rowIndex, cellIndex) {
+				const target = $tbody.children[rowIndex]?.children[cellIndex];
+				if (!target || target.classList.contains('opened')) {
+					return;
+				}
+				const count = countMines(rowIndex, cellIndex);
+				target.textContent = count || '';
+				target.className = 'opened';
+				data[rowIndex][cellIndex] = count;
+				if (count === 0) {
+					setTimeout(() => {
+						openAround(rowIndex + 1, cellIndex - 1);
+						openAround(rowIndex + 1, cellIndex);
+						openAround(rowIndex + 1, cellIndex + 1);
+						openAround(rowIndex, cellIndex - 1);
+						openAround(rowIndex, cellIndex + 1);
+						openAround(rowIndex - 1, cellIndex - 1);
+						openAround(rowIndex - 1, cellIndex);
+						openAround(rowIndex - 1, cellIndex + 1);
+					}, 0);
+				}
+			}
+
+			//좌클릭이벤트
+			function onLeftClick(event) {
+				event.preventDefault();
+				const target = event.target;
+				const rowIndex = event.target.parentNode.rowIndex;
+				const cellIndex = event.target.cellIndex;
+				const content = data[rowIndex][cellIndex];
+				if (content === CODE.NORMAL) {
+					//닫혀있는 상태일 때, 클릭을 하면
+					openAround(rowIndex, cellIndex);
+					// target.textContent = count || '';
+					// target.className = 'opened';
+					// data[rowIndex][cellIndex] = count;
+				}
+				//지뢰면
+				else if (content === CODE.MINE) {
+					target.className = 'opened';
+					target.textContent = '펑!';
+					$tbody.removeEventListener('contextmenu', onRightClick);
+					$tbody.removeEventListener('click', onLeftClick);
+				}
 			}
 
 			//우클릭이벤트
@@ -91,38 +162,37 @@
 				const cellIndex = event.target.cellIndex;
 				const content = data[rowIndex][cellIndex];
 				switch (content) {
-					case '닫힘':
+					case CODE.NORMAL:
 						event.target.className = 'question';
 						event.target.textContent = '?';
-						data[rowIndex][cellIndex] = '물음표';
+						data[rowIndex][cellIndex] = CODE.QUESTION;
 						break;
-					case '물음표':
+					case CODE.QUESTION:
 						event.target.className = 'flag';
 						event.target.textContent = '!';
-						data[rowIndex][cellIndex] = '깃발';
+						data[rowIndex][cellIndex] = CODE.FLAG;
 						break;
-					case '깃발':
+					case CODE.FLAG:
 						event.target.className = '';
 						event.target.textContent = '';
-						data[rowIndex][cellIndex] = '닫힘';
+						data[rowIndex][cellIndex] = CODE.NORMAL;
 						break;
-					case '지뢰':
+					case CODE.MINE:
 						event.target.className = 'question';
 						event.target.textContent = '?';
-						data[rowIndex][cellIndex] = '지뢰?';
+						data[rowIndex][cellIndex] = CODE.QUESTION_MINE;
 						break;
-					case '지뢰?':
+					case CODE.QUESTION_MINE:
 						event.target.className = 'flag';
 						event.target.textContent = '!';
-						data[rowIndex][cellIndex] = '지뢰!';
+						data[rowIndex][cellIndex] = CODE.FLAG_MINE;
 						break;
-					case '지뢰!':
+					case CODE.FLAG_MINE:
 						event.target.className = '';
 						event.target.textContent = '';
-						data[rowIndex][cellIndex] = '지뢰';
+						data[rowIndex][cellIndex] = CODE.MINE;
 						break;
 				}
-				console.log(data[rowIndex][cellIndex]);
 			}
 
 			//화면에 그려주기
@@ -133,13 +203,15 @@
 					row.forEach((cell, i) => {
 						const $td = document.createElement('td');
 						$tr.append($td);
-						if (cell === '지뢰') {
+						if (cell === CODE.MINE) {
 							$td.textContent = 'X';
 						}
 					});
 					$tbody.append($tr);
 				});
 				$tbody.addEventListener('contextmenu', onRightClick);
+				$tbody.addEventListener('click', onLeftClick);
+				console.log(data);
 			}
 
 			drawTable();

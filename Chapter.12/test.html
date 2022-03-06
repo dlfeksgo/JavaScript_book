@@ -7,13 +7,17 @@
 		<title>Document</title>
 	</head>
 	<body>
-		<button class="btn bbb">눌러바</button>
-		<!-- <button class="btn">눌러바2</button> -->
+		<table>
+			<tr>
+				<td id="td00"></td>
+				<td id="td00"></td>
+				<td id="td00"></td>
+			</tr>
+		</table>
 
 		<script>
-			const $button = document.querySelector('.btn');
-			const test = $button.classList.item(1);
-			console.log(test);
+			const $td = document.querySelector('td');
+			const test = document.querySelector('tr').children;
 		</script>
 	</body>
 </html>
