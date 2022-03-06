@@ -44,6 +44,7 @@
 			const $table = document.querySelector('#table');
 			const $result = document.querySelector('#result');
 			const $tbody = document.querySelector('tbody');
+			const $form = document.querySelector('#form');
 			const $timer = document.querySelector('#timer');
 			const row = 10;
 			const cell = 10;
@@ -110,7 +111,7 @@
 				return i;
 			}
 
-			function openAround(rowIndex, cellIndex) {
+			function open(rowIndex, cellIndex) {
 				const target = $tbody.children[rowIndex]?.children[cellIndex];
 				if (!target || target.classList.contains('opened')) {
 					return;
@@ -120,6 +121,17 @@
 				target.className = 'opened';
 				data[rowIndex][cellIndex] = count;
 				openCount++;
+				if (openCount === row * cell - mine) {
+					const time = (new Date() - startTime) / 1000;
+					setTimeout(() => {
+						alert(`승리! ${time}초 걸렸어요`);
+					}, 0);
+				}
+				return count;
+			}
+
+			function openAround(rowIndex, cellIndex) {
+				const count = open(rowIndex, cellIndex);
 				if (count === 0) {
 					setTimeout(() => {
 						openAround(rowIndex + 1, cellIndex - 1);
@@ -132,26 +144,19 @@
 						openAround(rowIndex - 1, cellIndex + 1);
 					}, 0);
 				}
-				if (openCount === row * cell - mine) {
-					const time = (new Date() - startTime) / 1000;
-					setTimeout(() => {
-						alert(`승리! ${time}초 걸렸어요`);
-					}, 0);
-				}
 			}
+
 			//좌클릭이벤트
+			//닫혀있는 상태일 때, 클릭을 하면 주변에 지뢰가 있거나, 없거나이다.
+			//open 함수가 더 먼저 떠오를듯
 			function onLeftClick(event) {
 				event.preventDefault();
 				const target = event.target;
-				const rowIndex = event.target.parentNode.rowIndex;
-				const cellIndex = event.target.cellIndex;
+				const rowIndex = target.parentNode.rowIndex;
+				const cellIndex = target.cellIndex;
 				const content = data[rowIndex][cellIndex];
 				if (content === CODE.NORMAL) {
-					//닫혀있는 상태일 때, 클릭을 하면
 					openAround(rowIndex, cellIndex);
-					// target.textContent = count || '';
-					// target.className = 'opened';
-					// data[rowIndex][cellIndex] = count;
 				}
 				//지뢰면
 				else if (content === CODE.MINE) {
@@ -205,7 +210,6 @@
 			//화면에 그려주기
 			function drawTable() {
 				startTime = new Date();
-
 				data = plantMine();
 				data.forEach((row, i) => {
 					const $tr = document.createElement('tr');
