@@ -44,6 +44,7 @@
 			const $table = document.querySelector('#table');
 			const $result = document.querySelector('#result');
 			const $tbody = document.querySelector('tbody');
+			const $timer = document.querySelector('#timer');
 			const row = 10;
 			const cell = 10;
 			const mine = 10;
@@ -58,6 +59,7 @@
 			};
 
 			let openCount = 0;
+			let startTime;
 			// let data = [];
 
 			//게임판 생성
@@ -108,7 +110,6 @@
 				return i;
 			}
 
-			// console.log(target); // 지가 혼자 여는 거라 target이 게임판 외부에 있을 수 있음
 			function openAround(rowIndex, cellIndex) {
 				const target = $tbody.children[rowIndex]?.children[cellIndex];
 				if (!target || target.classList.contains('opened')) {
@@ -118,6 +119,7 @@
 				target.textContent = count || '';
 				target.className = 'opened';
 				data[rowIndex][cellIndex] = count;
+				openCount++;
 				if (count === 0) {
 					setTimeout(() => {
 						openAround(rowIndex + 1, cellIndex - 1);
@@ -130,8 +132,13 @@
 						openAround(rowIndex - 1, cellIndex + 1);
 					}, 0);
 				}
+				if (openCount === row * cell - mine) {
+					const time = (new Date() - startTime) / 1000;
+					setTimeout(() => {
+						alert(`승리! ${time}초 걸렸어요`);
+					}, 0);
+				}
 			}
-
 			//좌클릭이벤트
 			function onLeftClick(event) {
 				event.preventDefault();
@@ -197,6 +204,8 @@
 
 			//화면에 그려주기
 			function drawTable() {
+				startTime = new Date();
+
 				data = plantMine();
 				data.forEach((row, i) => {
 					const $tr = document.createElement('tr');
@@ -211,7 +220,6 @@
 				});
 				$tbody.addEventListener('contextmenu', onRightClick);
 				$tbody.addEventListener('click', onLeftClick);
-				console.log(data);
 			}
 
 			drawTable();
