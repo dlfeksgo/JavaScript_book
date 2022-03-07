@@ -7,17 +7,22 @@
 		<title>Document</title>
 	</head>
 	<body>
-		<table>
-			<tr>
-				<td id="td00"></td>
-				<td id="td00"></td>
-				<td id="td00"></td>
-			</tr>
-		</table>
+		<form id="form">
+			<input placeholder="가로 줄" id="row" size="5" />
+			<input placeholder="세로 줄" id="cell" size="5" />
+			<input placeholder="지뢰" id="mine" size="5" />
+			<button>생성</button>
+		</form>
 
 		<script>
-			const $td = document.querySelector('td');
-			const test = document.querySelector('tr').children;
+			const $form = document.querySelector('#form');
+
+			function onSubmit() {
+				event.preventDefault();
+				console.log(event.target.querySelector('#row').value);
+			}
+
+			$form.addEventListener('submit', onSubmit);
 		</script>
 	</body>
 </html>
