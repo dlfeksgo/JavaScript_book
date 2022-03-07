@@ -72,7 +72,7 @@
 				//타이머 적용하기
 				interval = setInterval(() => {
 					const time = Math.floor((new Date() - startTime) / 1000);
-					$timer.textContent = `${time}`;
+					$timer.textContent = `${time}초`;
 				}, 1000);
 			}
 
@@ -207,21 +207,42 @@
 				}
 			}
 
+			function showMines() {
+				const mines = [CODE.MINE, CODE.QUESTION_MINE, CODE.FLAG_MINE];
+				data.forEach((row, rI) => {
+					row.forEach((cell, cI) => {
+						if (mines.includes(cell)) {
+							$tbody.children[rI].children[cI].textContent = 'X';
+						}
+					});
+				});
+			}
+
 			function onLeftClick(event) {
 				event.preventDefault();
 				const target = event.target;
 				const rowIndex = target.parentNode.rowIndex;
 				const cellIndex = target.cellIndex;
 				const content = data[rowIndex][cellIndex];
+				if (openCount === 0 && content === CODE.MINE) {
+					$tbody.textContent = '';
+					startTime = new Date();
+					drawTable();
+					interval = setInterval(() => {
+						const time = Math.floor((new Date() - startTime) / 1000);
+						$timer.textContent = `${time}초`;
+					}, 1000);
+					return;
+				}
 				if (content === CODE.NORMAL) {
 					openAround(rowIndex, cellIndex);
 				}
 				//지뢰면
 				else if (content === CODE.MINE) {
+					showMines();
+					clearInterval(interval);
 					target.textContent = '펑!';
 					target.className = 'opened';
-					clearInterval(interval);
-
 					$tbody.removeEventListener('contextmenu', onRightClick);
 					$tbody.removeEventListener('click', onLeftClick);
 				}
@@ -235,7 +256,7 @@
 						const $td = document.createElement('td');
 						$tr.append($td);
 						if (cell === CODE.MINE) {
-							$td.textContent = 'X'; //개발용
+							// $td.textContent = 'X'; //개발용
 						}
 					});
 					$tbody.append($tr);
