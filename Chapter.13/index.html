@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			#table {
+				border-collapse: collapse;
+				user-select: none;
+			}
+			#table td {
+				border: 10px solid #bbada0;
+				width: 116px;
+				height: 128px;
+				font-size: 50px;
+				font-weight: bold;
+				text-align: center;
+			}
+			#score {
+				user-select: none;
+			}
+			.color-2 {
+				background-color: #eee4da;
+				color: #776e65;
+			}
+			.color-4 {
+				background-color: #eee1c9;
+				color: #776e65;
+			}
+			.color-8 {
+				background-color: #f3b27a;
+				color: 'white';
+			}
+			.color-16 {
+				background-color: #f69664;
+				color: 'white';
+			}
+			.color-32 {
+				background-color: #f77c5f;
+				color: 'white';
+			}
+			.color-64 {
+				background-color: #f75f3b;
+				color: 'white';
+			}
+			.color-128 {
+				background-color: #edd073;
+				color: #776e65;
+			}
+			.color-256 {
+				background-color: #edcc62;
+				color: #776e65;
+			}
+			.color-512 {
+				background-color: #edc950;
+				color: #776e65;
+			}
+			.color-1024 {
+				background-color: #edc53f;
+				color: #776e65;
+			}
+			.color-2048 {
+				background-color: #edc22e;
+				color: #776e65;
+			}
+		</style>
+	</head>
+	<body>
+		<table id="table"></table>
+		<div id="score">0</div>
+		<script>
+			const $table = document.querySelector('#table');
+			const $score = document.querySelector('#score');
+
+			let data = [];
+
+			// 게임시작, 4x4게임판 그리기
+			function startGame() {
+				const $fragment = document.createDocumentFragment();
+				for (let i = 0; i < 4; i++) {
+					const rowData = [];
+					data.push(rowData); //놓친 부분(1)
+					const $tr = document.createElement('tr');
+					for (let j = 0; j < 4; j++) {
+						const $td = document.createElement('td');
+						rowData.push(0); //놓친 부분(2)
+						$tr.append($td);
+					}
+					$fragment.append($tr);
+				}
+				$table.append($fragment);
+				put2Random();
+				draw();
+			}
+
+			// 랜덤으로 2 넣어주기
+			function put2Random() {
+				const emptyCells = [];
+				data.forEach((row, i) => {
+					row.forEach((cell, j) => {
+						if (!cell) {
+							emptyCells.push([i, j]);
+						}
+					});
+				});
+				const randomCell =
+					emptyCells[Math.floor(Math.random() * emptyCells.length)];
+				data[randomCell[0]][randomCell[1]] = 2;
+			}
+
+			//화면에 그려주기
+			function draw() {
+				data.forEach((row, i) => {
+					row.forEach((cell, j) => {
+						const $target = table.children[i].children[j];
+						if (cell) {
+							$target.className = 'color-' + cell;
+							$target.textContent = cell;
+						}
+						// else {
+						//     $target.className = ''
+						//     $target.textContent = ''
+						// }
+					});
+				});
+			}
+
+			//셀 움직이기
+			function moveCells(direction) {
+				switch (direction) {
+					case 'left':
+						break;
+					case 'right':
+						break;
+					case 'up':
+						break;
+					case 'down':
+						break;
+				}
+			}
+
+			//이동방향 판단하기
+			//1.키보드
+			// window.addEventListener('keyup', (event) => {
+			// 	if (event.key === ArrowUp) {
+			// 		moveCells(up);
+			// 	} else if (event.key === ArrowDown) {
+			// 		moveCells(down);
+			// 	} else if (event.key === ArrowLeft) {
+			// 		moveCells(left);
+			// 	} else if (event.key === ArrowRight) {
+			// 		moveCells(right);
+			// 	}
+			// });
+
+			//2.마우스움직임
+			window.addEventListener('mouseup', (event) => {
+				console.log(event);
+			});
+
+			startGame();
+		</script>
+	</body>
+</html>
