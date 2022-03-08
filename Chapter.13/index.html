@@ -75,6 +75,12 @@
 			const $score = document.querySelector('#score');
 
 			let data = [];
+			// data = [
+			// 	[0, 2, 2, 4],
+			// 	[0, 0, 0, 8],
+			// 	[2, 0, 4, 0],
+			// 	[2, 2, 2, 2],
+			// ];
 
 			// 게임시작, 4x4게임판 그리기
 			function startGame() {
@@ -114,53 +120,117 @@
 			function draw() {
 				data.forEach((row, i) => {
 					row.forEach((cell, j) => {
-						const $target = table.children[i].children[j];
+						const $target = $table.children[i].children[j];
 						if (cell) {
 							$target.className = 'color-' + cell;
 							$target.textContent = cell;
+						} else {
+							$target.className = '';
+							$target.textContent = '';
 						}
-						// else {
-						//     $target.className = ''
-						//     $target.textContent = ''
-						// }
 					});
 				});
 			}
 
+			startGame();
+
+			data = [
+				[0, 2, 2, 0],
+				[0, 8, 0, 0],
+				[2, 2, 4, 0],
+				[2, 2, 2, 2],
+			];
+			draw();
+
 			//셀 움직이기
 			function moveCells(direction) {
 				switch (direction) {
-					case 'left':
-						break;
+					// case 'left':
+					// 	{
+					// 		const newArray = [[], [], [], []]; //새로운 이차열 배열 준비
+					// 		data.forEach((row, i) => {
+					// 			row.forEach((cell, j) => {
+					// 				if (cell) {
+					// 					if (cell === newArray[i][newArray[i].length - 1]) {
+					// 						newArray[i][newArray[i].length - 1] *= -2;
+					// 					} else {
+					// 						newArray[i].push(cell);
+					// 					}
+					// 				}
+					// 			});
+					// 		});
+					// 		//게임판 data 안에 newArray의 데이터를 넣어주는 작업
+					// 		[1, 2, 3, 4].forEach((row, i) => {
+					// 			[1, 2, 3, 4].forEach((cell, j) => {
+					// 				data[i][j] = Math.abs(newArray[i][j]) || 0;
+					// 			});
+					// 		});
+					// 	}
+					// 	break;
 					case 'right':
+						{
+							const newArray = [[4, 2, 2], [], [], []];
+							data.forEach((row, i) => {
+								row.forEach((cell, j) => {
+									if (row[3 - j]) {
+										if (row[3 - j] === newArray[i][j - 1]) {
+											newArray[i][j - 1] *= -2;
+										} else {
+											newArray[i].push(row[3 - j]);
+										}
+									}
+								});
+							});
+							console.log(newArray);
+							[1, 2, 3, 4].forEach((row, i) => {
+								[1, 2, 3, 4].forEach((cell, j) => {
+									data[i][3 - j] = Math.abs(newArray[i][j]) || 0;
+								});
+							});
+							console.log(data);
+						}
 						break;
 					case 'up':
 						break;
 					case 'down':
 						break;
 				}
+				draw();
 			}
 
 			//이동방향 판단하기
 			//1.키보드
-			// window.addEventListener('keyup', (event) => {
-			// 	if (event.key === ArrowUp) {
-			// 		moveCells(up);
-			// 	} else if (event.key === ArrowDown) {
-			// 		moveCells(down);
-			// 	} else if (event.key === ArrowLeft) {
-			// 		moveCells(left);
-			// 	} else if (event.key === ArrowRight) {
-			// 		moveCells(right);
-			// 	}
-			// });
-
-			//2.마우스움직임
-			window.addEventListener('mouseup', (event) => {
-				console.log(event);
+			window.addEventListener('keyup', (event) => {
+				if (event.key === 'ArrowUp') {
+					moveCells('up');
+				} else if (event.key === 'ArrowDown') {
+					moveCells('down');
+				} else if (event.key === 'ArrowLeft') {
+					moveCells('left');
+				} else if (event.key === 'ArrowRight') {
+					moveCells('right');
+				}
 			});
 
-			startGame();
+			//2.마우스움직임
+			let startcoord;
+			window.addEventListener('mousedown', (event) => {
+				startcoord = [event.clientX, event.clientY];
+			});
+			window.addEventListener('mouseup', (event) => {
+				const endcoord = [event.clientX, event.clientY];
+				const diffX = endcoord[0] - startcoord[0];
+				const diffY = endcoord[1] - startcoord[1];
+				if (diffX < 0 && Math.abs(diffX) > Math.abs(diffY)) {
+					moveCells('left');
+				} else if (diffX > 0 && Math.abs(diffX) > Math.abs(diffY)) {
+					moveCells('right');
+				} else if (diffY > 0 && Math.abs(diffX) < Math.abs(diffY)) {
+					moveCells('up');
+				} else if (diffY < 0 && Math.abs(diffX) < Math.abs(diffY)) {
+					moveCells('down');
+				}
+			});
 		</script>
 	</body>
 </html>
