@@ -129,27 +129,47 @@
 		<script>
 			const $startbtn = document.querySelector('#start');
 			const $$cell = document.querySelectorAll('.cell');
-			const $$gopher = document.querySelectorAll('.gopher');
-			const $bomb = document.querySelector('.bomb');
+			// const $$gopher = document.querySelectorAll('.gopher');
+			// const $bomb = document.querySelector('.bomb');
 
 			let started = false;
+			let gopherPercent = 0.3; //누적퍼센트 개념
+			let bombPercent = 0.5;
+
+			let score = 0;
+			let life = 3;
+
 			const holes = Array.from($$cell);
-			// console.log(holes);
+			const items = [];
 
 			function pop() {
 				holes.forEach((hole, i) => {
-					const $gopher = holes[i].querySelector('.gopher');
-					$gopher.classList.remove('hidden');
-					setTimeout(() => {
-						$gopher.classList.add('hidden');
-					}, 1000);
+					// if (!items.includes(0)) return;
+					if (items[i]) return;
+					const randomValue = Math.random();
+					if (randomValue < gopherPercent) {
+						const $gopher = holes[i].querySelector('.gopher');
+						$gopher.classList.remove('hidden');
+						items[i] = setTimeout(() => {
+							$gopher.classList.add('hidden');
+							items[i] = 0;
+						}, 1000);
+					} else if (randomValue < bombPercent) {
+						const $bomb = holes[i].querySelector('.bomb');
+						$bomb.classList.remove('hidden');
+						items[i] = setTimeout(() => {
+							$bomb.classList.add('hidden');
+							items[i] = 0;
+						}, 1000);
+					}
 				});
 			}
 
-			//시작을 누르면 9개 구멍에서 두더지가 한번에 나왔다가 사라진다.
+			//인터벌은 pop()이 호출될 때, 한번만 실행되어야 한다. 🔥 인터벌 선언 위치 실수
 			$startbtn.addEventListener('click', () => {
 				if (started) return;
 				started = true;
+				const popId = setInterval(pop, 1000);
 				pop();
 			});
 		</script>
