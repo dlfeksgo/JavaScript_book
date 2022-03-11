@@ -127,72 +127,30 @@
 			</div>
 		</div>
 		<script>
-			const $start = document.querySelector('#start');
-			const $game = document.querySelector('#game');
-			const $gopher = document.querySelectorAll('.gopher');
-			const $bomb = document.querySelectorAll('.bomb');
+			const $startbtn = document.querySelector('#start');
+			const $$cell = document.querySelectorAll('.cell');
+			const $$gopher = document.querySelectorAll('.gopher');
+			const $bomb = document.querySelector('.bomb');
 
-			const gameItems = [];
-			let count = 3;
+			let started = false;
+			const holes = Array.from($$cell);
+			// console.log(holes);
 
-			let interval;
-			let intervalA;
-			let intervalB;
-
-			function startGame() {
-				interval = setInterval(() => {
-					const item = gameItems.shift();
-					item.classList.remove('hidden');
-					if (item.classList.contains('bomb')) {
-						setTimeout(() => {
-							item.classList.add('hidden');
-						}, 2000);
-					}
-				}, 1000);
-			}
-
-			// const randomBomb = Math.floor(Math.random() * $bomb.length);
-
-			// gameItems = [두더지, 두더지, 폭탄, 두더지, 두더지, 두더지, 폭탄, 폭탄]
-			function createItems() {
-				intervalA = setInterval(() => {
-					const randomGopher = Math.floor(Math.random() * $gopher.length);
-					const displayGopher = $gopher[randomGopher];
-					gameItems.push(displayGopher);
-				}, 500);
-				intervalB = setInterval(() => {
-					const randomBomb = Math.floor(Math.random() * $bomb.length);
-					const displayBomb = $bomb[randomBomb];
-					gameItems.push(displayBomb);
-				}, Math.floor(Math.random() * 500 + 500));
-			}
-
-			$game.addEventListener('click', (event) => {
-				const $target = event.target;
-				console.log($target);
-
-				if ($target.classList.contains('bomb')) {
-					count--;
-					if (count === 0) {
-						alert('3번의 기회가 날아갔슴다');
-						return;
-					}
-					$target.classList.add('hidden');
-				} else {
-					$target.classList.remove('hidden');
-					$target.classList.add('boom');
+			function pop() {
+				holes.forEach((hole, i) => {
+					const $gopher = holes[i].querySelector('.gopher');
+					$gopher.classList.remove('hidden');
 					setTimeout(() => {
-						$target.classList.add('hidden');
-					}, 0);
-					setTimeout(() => {
-						$target.classList.remove('boom');
+						$gopher.classList.add('hidden');
 					}, 1000);
-				}
-			});
+				});
+			}
 
-			$start.addEventListener('click', () => {
-				createItems();
-				startGame();
+			//시작을 누르면 9개 구멍에서 두더지가 한번에 나왔다가 사라진다.
+			$startbtn.addEventListener('click', () => {
+				if (started) return;
+				started = true;
+				pop();
 			});
 		</script>
 	</body>
